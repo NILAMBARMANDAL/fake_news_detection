@@ -28,24 +28,25 @@ if st.button("Predict"):
 # Fact checking with Wikipedia
 def verify_facts(text):
     try:
-        keywords = text.split()[:5]
-        for keyword in keywords:
+        # Filter out short/common words and focus on capitalized or meaningful ones
+        words = [word for word in text.split() if len(word) > 3 and word[0].isalpha()]
+        checked = set()
+
+        for word in words:
+            word_lower = word.lower()
+            if word_lower in checked:
+                continue
+            checked.add(word_lower)
+
             try:
-                summary = wikipedia.summary(keyword, sentences=2)
-                if keyword.lower() in summary.lower():
-                    return f"🧠 Found info on **{keyword}**:\n\n> {summary}"
+                summary = wikipedia.summary(word, sentences=2)
+                if word.lower() in summary.lower():
+                    return f"🧠 Found info on **{word}**:\n\n> {summary}"
             except wikipedia.exceptions.DisambiguationError:
                 continue
             except wikipedia.exceptions.PageError:
                 continue
-        return "⚠️ No matching fact found on Wikipedia for the top keywords."
+
+        return "⚠️ No matching fact found on Wikipedia."
     except Exception as e:
         return f"❌ Error during fact checking: {str(e)}"
-
-# Fact verification button
-if st.button("🔎 Verify Facts via Wikipedia"):
-    if news_input.strip() == "":
-        st.warning("Please enter some news content.")
-    else:
-        result = verify_facts(news_input)
-        st.markdown(result)
