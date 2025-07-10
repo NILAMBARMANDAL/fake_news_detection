@@ -1,62 +1,62 @@
 import streamlit as st
 import joblib
-import wikipedia
-
+import google.generativeai as genai
+# --- Configure Gemini API Key using Streamlit secrets ---
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 # Load model and vectorizer
 model = joblib.load('svm_fake_news_model.pkl')
 vectorizer = joblib.load('tfidf_vectorizer.pkl')
 
-# Streamlit page config
-st.set_page_config(page_title="Fake News Detector + Fact Checker", layout="centered")
+# Configure Streamlit page
+st.set_page_config(page_title="Fake News Detector + Gemini Fact Checker", layout="centered")
 st.title("📰 Fake News Detection App")
-st.subheader("🚀 Classify news as Real or Fake and verify facts using Wikipedia")
+st.subheader("🚀 Classify news as Real or Fake and verify facts using Gemini LLM")
 
 # Input field
 news_input = st.text_area("✍️ Enter the news content below:")
 
-# Fact checking function
-def verify_facts(text):
-    try:
-        # Select meaningful words only
-        words = [word for word in text.split() if len(word) > 3 and word.isalpha()]
-        checked = set()
-        
-        for word in words:
-            keyword = word.lower()
-            if keyword in checked:
-                continue
-            checked.add(keyword)
-            try:
-                summary = wikipedia.summary(word, sentences=2)
-                if word.lower() in summary.lower():
-                    return f"🧠 Found info on **{word}**:\n\n> {summary}"
-            except wikipedia.exceptions.DisambiguationError:
-                continue
-            except wikipedia.exceptions.PageError:
-                continue
-        return "⚠️ No matching fact found on Wikipedia."
-    except Exception as e:
-        return f"❌ Error during fact checking: {str(e)}"
+# --- Gemini Config ---
+GEMINI_API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual key
+genai.configure(api_key=GEMINI_API_KEY)
 
-# Button action
+model_gemini = genai.GenerativeModel('gemini-pro')
+
+# Gemini-based Fact Checking Function
+def verify_facts_with_gemini(claim):
+    prompt = f"""
+You are a fact-checking assistant.
+
+Claim: "{claim}"
+
+Check the claim using publicly available facts and common knowledge.
+Return your answer in this format:
+Verdict: Likely True or Likely False
+Reason: [Short explanation]
+"""
+    try:
+        response = model_gemini.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"❌ Error during Gemini fact checking: {str(e)}"
+
+# Button click
 if st.button("🔍 Predict & Verify"):
     if news_input.strip() == "":
         st.warning("⚠️ Please enter some news content.")
     else:
-        # Predict using model
+        # Predict
         vector_input = vectorizer.transform([news_input])
         prediction = model.predict(vector_input)[0]
 
-        # Display prediction result
         if prediction == 1:
             st.success("✅ Prediction: Real News")
         else:
             st.error("❌ Prediction: Fake News")
 
         st.markdown("---")
-        st.subheader("🧠 Wikipedia Fact Check")
+        st.subheader("🧠 Gemini Fact Checker")
 
-        # Perform fact checking
-        with st.spinner("Searching Wikipedia for relevant facts..."):
-            fact_result = verify_facts(news_input)
+        # Fact check with Gemini
+        with st.spinner("Verifying facts using Gemini..."):
+            fact_result = verify_facts_with_gemini(news_input)
         st.markdown(fact_result)
