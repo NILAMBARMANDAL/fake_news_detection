@@ -4,4 +4,4 @@ pandas
 numpy
 nltk
 joblib
-wikipedia
+google-generativeai
