@@ -4,4 +4,4 @@ pandas
 numpy
 nltk
 joblib
-google-generativeai
+openai>=1.0.0
