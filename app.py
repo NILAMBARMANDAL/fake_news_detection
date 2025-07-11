@@ -1,7 +1,8 @@
 import streamlit as st
 import joblib
+
 import google.generativeai as genai
-# --- Configure Gemini API Key using Streamlit secrets ---
+
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 # Load model and vectorizer
 model = joblib.load('svm_fake_news_model.pkl')
