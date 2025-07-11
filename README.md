@@ -1,44 +1,50 @@
-# 📰 Fake News Detection App
+# 📰 Fake News Detection App + Fact Checker (LLM-Powered)
 
-This is a web application that detects whether a news article is **Fake** or **Real**, built using a **Support Vector Machine (SVM)** model trained on the WELFake dataset. The app is powered by **Streamlit** and deployed on the cloud for public use.
+A web-based app that detects whether a news article is **Fake** or **Real** using a trained **SVM model**, and then performs **fact-checking** using a **free LLM** (`DeepSeek R1`) via OpenRouter.
 
 ---
 
-## 📊 Dataset
+## 📦 Dataset
 
 - **Name:** [WELFake Dataset](https://www.kaggle.com/datasets/nelgiriyewithana/welfake)
-- **Source:** Kaggle
-- **Size:** ~72000 articles
-- **Labels:** 
-  - `0`: Fake
-  - `1`: Real
+- **Size:** ~72,000 articles
+- **Labels:**
+  - `0` = Fake
+  - `1` = Real
 
 ---
 
-## 🤖 Model Details
+## ⚙️ Model Details
 
-- **Vectorizer:** TF-IDF (max features = 10,000)
-- **Model Used:** SVM (Support Vector Machine)
-- **Accuracy:** ~95.6%
-- **Libraries Used:**
-  - `scikit-learn`
-  - `nltk`
-  - `joblib`
-  - `pandas`, `numpy`
+| Component     | Description                         |
+|---------------|-------------------------------------|
+| Model         | Support Vector Machine (SVM)        |
+| Vectorizer    | TF-IDF (max_features=10,000)        |
+| Accuracy      | ~95.6%                              |
 
 ---
 
 ## 🌐 Live App
 
-> ✅ Click here to try the app:  
+> ✅ Try it live:  
 **[🔗 Open Fake News Detector](https://your-username-your-repo.streamlit.app)**  
-*(Replace with your actual Streamlit app link)*
+*(Replace with your actual Streamlit Cloud URL)*
+
+---
+
+## 🔍 Features
+
+- ✅ Classifies news as Real or Fake using ML
+- 🧠 Fact-checks claims using LLM (DeepSeek R1)
+- 🪶 Uses lightweight model via OpenRouter (Free API)
+- 🚫 No billing or credit card required
 
 ---
 
 ## 🛠 How to Run Locally
 
-1. **Clone the repo**
+### 1. Clone the Repo
+
 ```bash
-git clone https://github.com/NILAMBARMANDAL/fake_news_detection.git
+git clone https://github.com/your-username/fake_news_detection.git
 cd fake_news_detection
